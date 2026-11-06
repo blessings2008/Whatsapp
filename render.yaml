@@ -35,7 +35,7 @@ services:
       - key: DATABASE_CONNECTION_URI
         fromDatabase:
           name: tambala-connect-db
-          property: connectionString
+          property: internalConnectionString
       - key: DATABASE_CONNECTION_CLIENT_NAME
         value: tambala_connect
       - key: CACHE_REDIS_ENABLED
