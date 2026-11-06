@@ -1,0 +1,93 @@
+# Tambala Connect — Render Blueprint
+# Deploy this Blueprint from the repository root.
+services:
+  - type: web
+    name: tambala-connect
+    runtime: docker
+    plan: 1c-2g
+    region: singapore
+    rootDir: evolution-api-develop
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /
+    disk:
+      name: tambala-connect-instances
+      mountPath: /evolution/instances
+      sizeGB: 5
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SERVER_NAME
+        value: tambala-connect
+      - key: SERVER_TYPE
+        value: http
+      - key: SERVER_PORT
+        value: "10000"
+      - key: PORT
+        value: "10000"
+      - key: SERVER_URL
+        fromService:
+          type: web
+          name: tambala-connect
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: DATABASE_PROVIDER
+        value: postgresql
+      - key: DATABASE_CONNECTION_URI
+        fromDatabase:
+          name: tambala-connect-db
+          property: connectionString
+      - key: DATABASE_CONNECTION_CLIENT_NAME
+        value: tambala_connect
+      - key: CACHE_REDIS_ENABLED
+        value: "true"
+      - key: CACHE_REDIS_URI
+        fromService:
+          type: keyvalue
+          name: tambala-connect-cache
+          property: connectionString
+      - key: CACHE_REDIS_PREFIX_KEY
+        value: tambala_connect
+      - key: CACHE_REDIS_SAVE_INSTANCES
+        value: "false"
+      - key: AUTHENTICATION_API_KEY
+        generateValue: true
+      - key: AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES
+        value: "false"
+      - key: CORS_ORIGIN
+        value: "*"
+      - key: CORS_METHODS
+        value: GET,POST,PUT,DELETE
+      - key: CORS_CREDENTIALS
+        value: "false"
+      - key: DATABASE_SAVE_DATA_INSTANCE
+        value: "true"
+      - key: DATABASE_SAVE_DATA_NEW_MESSAGE
+        value: "true"
+      - key: DATABASE_SAVE_MESSAGE_UPDATE
+        value: "true"
+      - key: DATABASE_SAVE_DATA_CONTACTS
+        value: "true"
+      - key: DATABASE_SAVE_DATA_CHATS
+        value: "true"
+      - key: DATABASE_SAVE_DATA_LABELS
+        value: "true"
+      - key: DATABASE_SAVE_DATA_HISTORIC
+        value: "true"
+      - key: WEBHOOK_EVENTS_ERRORS
+        value: "false"
+
+  - type: keyvalue
+    name: tambala-connect-cache
+    region: singapore
+    plan: 256mb
+    maxmemoryPolicy: allkeys-lru
+    persistenceMode: journal-snapshot
+    ipAllowList: []
+
+databases:
+  - name: tambala-connect-db
+    region: singapore
+    plan: 0.1c-256mb
+    databaseName: evolution_db
+    user: tambala_connect
+    diskSizeGB: 5
