@@ -36,7 +36,13 @@ export class InstanceController {
 
   public async createInstance(instanceData: InstanceDto) {
     try {
-      instanceData.instanceName = instanceData.instanceName?.trim();
+      // The Manager may submit a phone number without an instance name.
+      // Use the supplied number as a stable fallback; never let an empty name
+      // reach Prisma and trigger a misleading foreign-key error downstream.
+      instanceData.instanceName = instanceData.instanceName?.trim() || instanceData.number?.trim();
+      if (!instanceData.instanceName) {
+        throw new BadRequestException('instanceName is required (or provide a phone number)');
+      }
 
       const instance = channelController.init(instanceData, {
         configService: this.configService,
