@@ -21,6 +21,8 @@ services:
         value: tambala-connect
       - key: SERVER_TYPE
         value: http
+      - key: SERVER_DISABLE_MANAGER
+        value: "false"
       - key: SERVER_PORT
         value: "10000"
       - key: PORT
