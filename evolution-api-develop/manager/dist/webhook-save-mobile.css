@@ -1,0 +1,25 @@
+/*
+ * Keep the Webhook form's submit action reachable on short/mobile viewports.
+ * The original form places Save after the full event list; this pins that
+ * existing submit control to the viewport without changing its submit logic.
+ */
+#root form:has(input[name="url"]) {
+  padding-bottom: 5.5rem !important;
+}
+
+#root form:has(input[name="url"]) > div > div:last-child {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 100;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: flex-end;
+  margin: 0;
+  padding: 0.75rem 1.5rem max(0.75rem, env(safe-area-inset-bottom))
+    clamp(176px, 18vw, 240px);
+  background: Canvas;
+  color: CanvasText;
+  border-top: 1px solid color-mix(in srgb, CanvasText 16%, transparent);
+  box-shadow: 0 -0.25rem 1rem rgb(0 0 0 / 0.12);
+}
