@@ -1,25 +1,19 @@
 /*
- * Keep the Webhook form's submit action reachable on short/mobile viewports.
- * The original form places Save after the full event list; this pins that
- * existing submit control to the viewport without changing its submit logic.
+ * Keep the Webhook form's Save action reachable on mobile.
+ * The Manager source renders the submit button after the complete event list.
+ * Pin the actual submit button, rather than relying on the layout of its wrapper.
  */
-#root form:has(input[name="url"]) {
-  padding-bottom: 5.5rem !important;
-}
+@media (max-width: 768px) {
+  #root form:has(input[name="url"]) {
+    padding-bottom: 6rem !important;
+  }
 
-#root form:has(input[name="url"]) > div > div:last-child {
-  position: fixed;
-  inset-inline: 0;
-  bottom: 0;
-  z-index: 100;
-  box-sizing: border-box;
-  display: flex;
-  justify-content: flex-end;
-  margin: 0;
-  padding: 0.75rem 1.5rem max(0.75rem, env(safe-area-inset-bottom))
-    clamp(176px, 18vw, 240px);
-  background: Canvas;
-  color: CanvasText;
-  border-top: 1px solid color-mix(in srgb, CanvasText 16%, transparent);
-  box-shadow: 0 -0.25rem 1rem rgb(0 0 0 / 0.12);
+  #root form:has(input[name="url"]) button[type="submit"] {
+    position: fixed !important;
+    right: max(1rem, env(safe-area-inset-right)) !important;
+    bottom: max(1rem, env(safe-area-inset-bottom)) !important;
+    z-index: 9999 !important;
+    margin: 0 !important;
+    box-shadow: 0 0.25rem 1rem rgb(0 0 0 / 0.22);
+  }
 }
